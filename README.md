@@ -20,4 +20,5 @@ One visualization per slide
 A 1-2 sentence explanation of each slide
 The SQL query used to create the data used in the visualization.
 
-IMPORTANT: This project was made personally from Saad Alhosan, to pass udacity nanodegree program. Udacity does not allow plagrism, the project is published for professional resons, and it not by any way a support for cheating and plagrism. However, feel free to contact me if you need any help in the project or understanding the codes. 
+IMPORTANT: This project was made personally from Saad Alhosan, to pass udacity nanodegree program. Udacity does not allow plagrism, read Udacity Honor Code before using any code line.
+the project is published for professional resons, and it not by any way a support for cheating and plagrism. However, feel free to contact me if you need any help in the project or understanding the codes. 
