@@ -1,0 +1,64 @@
+--Q1 what is the highest media type sales?
+SELECT M.name,
+				CAST(COUNT(T.MediaTypeId) AS float)/(SELECT COUNT(MediaTypeId) FROM Track) AS Media_count
+FROM MediaType M
+JOIN Track T
+ON M.MediaTypeId = T.MediaTypeId
+GROUP BY 1
+ORDER BY 2 DESC;
+################
+--Q2 what is the highest genre by Revenue?
+SELECT G.Name, SUM(I.UnitPrice*Quantity) AS Revenue_USD
+FROM Genre G
+JOIN Track t
+ON G.GenreId = t.GenreId
+JOIN InvoiceLine I
+ON t.TrackId= I.TrackId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 15;
+###################
+--Q3 what genre has the longest track duration average in minutes?
+SELECT  G.Name AS Genre_Name, AVG(T.Milliseconds)/60000 AS duration_by_minutes
+FROM Track T
+JOIN Genre G
+ON G.GenreId = T.GenreId
+GROUP BY 1
+ORDER BY 2 DESC;
+###################
+--Q4what percentage the artists in the highest genre selling are from all artists?
+WITH Highest_Genre AS (
+    SELECT G.Name AS G_NAME, SUM(I.UnitPrice*Quantity) AS Revenue
+    FROM Genre G
+    JOIN Track t
+    ON G.GenreId = t.GenreId
+    JOIN InvoiceLine I
+    ON t.TrackId= I.TrackId
+    GROUP BY 1
+    ORDER BY 2 DESC
+    LIMIT 1),
+
+ARTIST_GENRE AS (
+    SELECT a.ArtistId, a.name  ANAME, g.Name AS GNAME
+    FROM Artist a
+    JOIN Album b
+    ON a.ArtistId = b.ArtistId
+    JOIN Track t
+    ON b.AlbumId=t.AlbumId
+    JOIN Genre g
+    ON g.GenreId = t.GenreId
+    WHERE g.Name IN (SELECT G_NAME FROM Highest_Genre)
+    GROUP BY 1,2),
+
+GroupedArtists AS (
+    SELECT  ArtistId,
+            Name,
+            Case
+            WHEN ArtistId IN (SELECT ArtistId FROM ARTIST_GENRE) THEN 'related'
+            ELSE 'Unrelated'
+            END AS CountGroup
+    FROM Artist
+)
+SELECT CountGroup, CAST(Count(*) AS float)/ (SELECT COUNT(*) FROM GroupedArtists) AS percentage
+FROM GroupedArtists
+GROUP BY 1;
